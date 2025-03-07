@@ -268,8 +268,7 @@ export function RealtimeAudio({
 
       const audio = response.choices[0]?.message?.audio?.data;
       const audioTranscription = response.choices[0].message.audio?.transcript;
-
-      if (audio && transcription) {
+      if (audio) {
         const binaryString = atob(audio);
         const bytes = new Uint8Array(binaryString.length);
         for (let i = 0; i < binaryString.length; i++) {
