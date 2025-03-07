@@ -8,6 +8,7 @@ import { useSettings } from "@/lib/settings-provider";
 import { useMetrics } from "@/context/MetricsContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import OpenAI from "openai";
 
 export function RealtimeAudio({
   onDataChange,
@@ -74,13 +75,11 @@ export function RealtimeAudio({
         originalConsoleError.apply(console, [msg, ...args]);
       };
 
-      
       const stream = pipe.streamTranscriptions();
       streamRef.current = stream;
 
       for await (const event of stream) {
-        if(!isStreamingRef.current) {
-          console.log("Ended streaming and broke out of code");
+        if (!isStreamingRef.current) {
           break;
         }
         if (event.choices?.[0]?.text) {
@@ -152,27 +151,85 @@ export function RealtimeAudio({
 
   const generateSummary = async () => {
     setLoading(true);
+    const openaiApiKey = settings?.screenpipeAppSettings?.openaiApiKey;
+    const client = new OpenAI({
+      apiKey: openaiApiKey,
+      dangerouslyAllowBrowser: true,
+    });
+    const model = settings?.screenpipeAppSettings?.aiModel;
     try {
-      const response = await fetch("/api/openai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: metrics,
-          history: historyRef.current,
-        }),
+      const response = await client.chat.completions.create({
+        model: `${model}`,
+        messages: [
+          {
+            role: "system",
+            content: `
+              You are a professional recruiter and interview coach reviewing a recorded mock interview session. 
+              Alloy is the interviewer and 'You' is the interviewee. 'You' is the person you will be evaluating.
+              Your goal is to provide a comprehensive performance review that helps the interviewee improve their interviewing skills, 
+              both in terms of verbal responses and non-verbal communication (body language, posture, eye contact, etc.).
+  
+              Areas to Cover in Your Summary:
+              Overall Communication & Structure:
+              Evaluate whether the interviewee answered each question using a clear and structured format (such as the STAR method: Situation, Task, Action, Result).
+  
+              If their responses lacked structure, explain how they should have organized their answers to be clearer and more impactful.
+  
+              Assess whether they highlighted concrete achievements and quantified their impact when discussing their experiences.
+  
+              Provide specific examples where they could have improved the clarity, relevance, or depth of their responses.
+  
+              Content Quality & Technical Depth:
+              Analyze if the interviewee’s answers demonstrated the necessary knowledge.
+  
+              Identify any areas where they seemed uncertain, lacked depth, or could have elaborated more on their expertise.
+  
+              Suggest ways to enhance their explanations for greater impact.
+  
+              Body Language & Non-Verbal Communication:
+              
+              Assess their posture: Did they have a high bad posture count and maintained bad posture for a long duration of the interview?
+  
+              Review their eye contact: Did they maintain good eye contact with the interviewer, or were they frequently looking away?
+  
+              Evaluate their hand gestures: Were they using their hands too much or too little?
+              
+  
+              Explain why strong body language is important in building confidence and trust, and suggest specific improvements for their body language.
+  
+              Confidence & Overall Impression:
+              Did the interviewee come across as confident, well-prepared, and articulate?
+  
+              Identify any habits, tone of voice, or speaking patterns that reduced the strength of their delivery.
+  
+              Offer practical tips to enhance their confidence, tone, and presence in future interviews.
+  
+              Actionable Next Steps:
+              Summarize the top 3-5 most important areas for improvement, combining both content and body language feedback.
+              Provide a concise improvement plan the interviewee can follow to elevate their next performance.
+              Tone:
+              Be constructive, encouraging, and professional — the goal is to help the interviewee grow, not to criticize.
+  
+              Example Output (if helpful):
+              “In your answer to the system design question, you explained the components well but lacked a clear structure. In the future, begin by stating the high-level architecture before diving into specific details. You also tended to avoid eye contact when discussing unfamiliar topics — maintaining steady eye contact helps convey confidence even if you’re thinking through your answer.”
+  
+              Final Goal:
+              Your review should provide a balanced assessment of both the verbal responses and the non-verbal presence, helping the interviewee improve in both content delivery and professional presence.
+  
+              IMPORTANT: Use complete sentences and paragraphs only. Do not use any Markdown, special symbols, or bullet points.
+            `,
+          },
+          { role: "user", content: `Conversation History: ${history}` },
+          {
+            role: "user",
+            content: `Interview Body Language Results: ${metrics}`,
+          },
+        ],
+        store: true,
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        setSummary(data.message);
-      } else {
-        console.error(data.error);
-        setSummary("Failed to generate summary.");
-      }
+      setSummary(response.choices[0].message.content);
     } catch (err) {
-      console.error("Error generating a summary: ", err);
+      console.error("Error generating summary:", err);
       setSummary("An error occurred while generating the summary.");
     } finally {
       setLoading(false);
@@ -180,40 +237,56 @@ export function RealtimeAudio({
   };
 
   const generateAudio = async () => {
-    if(!isStreamingRef.current) return;
+    if (!isStreamingRef.current) return;
+    const openaiApiKey = settings?.screenpipeAppSettings?.openaiApiKey;
+    const client = new OpenAI({
+      apiKey: openaiApiKey,
+      dangerouslyAllowBrowser: true,
+    });
+    const model = settings?.screenpipeAppSettings?.aiModel;
     setIsResponding(true);
     try {
-      const response = await fetch("/api/whisper", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          transcription: transcriptionRef.current,
-          history: historyRef.current,
-        }),
+      const response = await client.chat.completions.create({
+        model: "gpt-4o-audio-preview",
+        modalities: ["text", "audio"],
+        audio: { voice: "alloy", format: "wav" },
+        messages: [
+          {
+            role: "system",
+            content: `
+          Your name is Alloy, professional interviewer conducting a mock interview for a candidate. 
+          Your goal is to evaluate the candidate’s responses, identify areas for improvement,
+          and provide constructive feedback on how they can enhance their answers, while conducting the interview.
+          IMPORTANT: Use complete sentences and paragraphs only. Do not use any Markdown, special symbols, or bullet points.`,
+          },
+          { role: "user", content: `Conversation History: ${history}` },
+          {
+            role: "user",
+            content: `Current conversation response or question: ${transcription}`,
+          },
+        ],
+        store: true,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate audio");
+      const audio = response.choices[0]?.message?.audio?.data;
+      const audioTranscription = response.choices[0].message.audio?.transcript;
+
+      if (audio && transcription) {
+        const binaryString = atob(audio);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const audioBlob = new Blob([bytes], { type: "audio/wav" });
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        const newHistory =
+          historyRef.current + "Alloy: " + audioTranscription + "\n";
+        setHistory(newHistory);
+
+        setAudioSrc(audioUrl);
       }
-
-      const data = await response.json();
-
-      const binaryString = atob(data.audio);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const audioBlob = new Blob([bytes], { type: "audio/wav" });
-
-      const audioUrl = URL.createObjectURL(audioBlob);
-
-      const newHistory =
-        historyRef.current + "Alloy: " + data.transcription + "\n";
-      setHistory(newHistory);
-
-      setAudioSrc(audioUrl);
     } catch (error) {
       console.error("Error generating audio:", error);
       setError("Error generating audio");

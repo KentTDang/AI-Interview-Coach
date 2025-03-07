@@ -4,6 +4,7 @@ Simulates a real interview environment by combining body language tracking (eye 
 
 ## Demo
 
+Check out the demo video on YouTube:
 [![AI Interview Coach Demo](https://img.youtube.com/vi/GokPYYGrF5g/0.jpg)](https://www.youtube.com/watch?v=GokPYYGrF5g)
 
 ## Technologies Used
@@ -11,6 +12,7 @@ Simulates a real interview environment by combining body language tracking (eye 
 - **Next.js** 
 - **Screenpipe** 
 - **OpenAI** 
+- **Deepgram**
 - **MediaPipe**
 
 ## Features
@@ -24,27 +26,20 @@ Simulates a real interview environment by combining body language tracking (eye 
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
-- npm or yarn
-- A Screenpipe API key (if required)
-- Access credentials for OpenAI services
-- A working installation of MediaPipe (refer to the [MediaPipe documentation](https://google.github.io/mediapipe/) for setup instructions)
+- Screenpipe Installed
+- OpenAI api key in Screenpipe
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/AI-Interview-Coach.git
+   git clone https://github.com/yourusername/betterview.git
    ```
 2. **Install dependencies:**
     ```bash
     bun install
     ```
-3. **Configure environment variables: Create a .env file in the root directory and add your API keys and configuration settings:**
-    ```bash
-    OPENAI_API_KEY=your_api_key_here
-    ```
-4. **Run Development Server:**
+3. **Run Development Server:**
     ```bash
     npm run dev
     ```
