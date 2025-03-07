@@ -156,10 +156,9 @@ export function RealtimeAudio({
       apiKey: openaiApiKey,
       dangerouslyAllowBrowser: true,
     });
-    const model = settings?.screenpipeAppSettings?.aiModel;
     try {
       const response = await client.chat.completions.create({
-        model: `${model}`,
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -243,7 +242,6 @@ export function RealtimeAudio({
       apiKey: openaiApiKey,
       dangerouslyAllowBrowser: true,
     });
-    const model = settings?.screenpipeAppSettings?.aiModel;
     setIsResponding(true);
     try {
       const response = await client.chat.completions.create({

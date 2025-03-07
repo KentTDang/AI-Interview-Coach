@@ -11,7 +11,7 @@ import { Hand, User, Eye, Activity, AlertTriangle, ToggleLeft } from "lucide-rea
 const Camera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [overlayEnabled, setOverlayEnabled] = useState(false);
+  const [overlayEnabled, setOverlayEnabled] = useState(true);
 
   useCamera(videoRef);
 
