@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-
   webpack: (config) => {
     // Add support for raw-loader to import file content as strings
     config.module.rules.push({

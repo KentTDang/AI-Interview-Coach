@@ -1,6 +1,6 @@
 {
   "name": "better-view",
-  "version": "0.0.8",
+  "version": "0.1.1",
   "private": false,
   "scripts": {
     "dev": "next dev",

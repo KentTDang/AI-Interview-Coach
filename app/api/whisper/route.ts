@@ -44,9 +44,9 @@ export async function POST(req: Request) {
       transcription: audioTranscription,
     });
   } catch (err) {
-    console.error("Error generating audio:", err);
+    console.error("Error generating audio, please make sure you have an openai api key in your settings:", err);
     return NextResponse.json(
-      { error: "Error generating audio" },
+      { error: "Error generating audio,please make sure you have an openai api key in your settings." },
       { status: 500 }
     );
   }
