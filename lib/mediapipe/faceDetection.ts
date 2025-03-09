@@ -1,4 +1,4 @@
-import { FaceLandmarker } from "@mediapipe/tasks-vision";
+import { FaceLandmarker } from "@mediapipe/tasks-vision"; 
 
 export const initializeFaceDetection = async (vision: any): Promise<FaceLandmarker> => {
   return await FaceLandmarker.createFromOptions(vision, {

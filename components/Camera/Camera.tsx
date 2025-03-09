@@ -1,12 +1,12 @@
-import React, { useRef, useState } from "react";
-import { useCamera } from "../../hooks/useCamera";
+
+import React, { useEffect, useRef, useState } from "react";
+import { useCamera } from "../../hooks/useCamera"
 import { useMediapipe } from "../../hooks/useMediaPipe";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@radix-ui/react-label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Hand, User, Eye, Activity, AlertTriangle, ToggleLeft } from "lucide-react"
+import { Hand, Eye, Activity} from "lucide-react"
 
 const Camera: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -16,9 +16,6 @@ const Camera: React.FC = () => {
   useCamera(videoRef);
 
   const {
-    handPresence,
-    facePresence,
-    posePresence,
     handDetectionCounter,
     handDetectionDuration,
     notFacingCounter,

@@ -1,5 +1,5 @@
 import { DrawingUtils, GestureRecognizer } from "@mediapipe/tasks-vision";
-import { Landmark } from "./types";
+import { Landmark, FaceDetections } from "./types";
 
 export const drawHandLandmarks = (
   canvas: HTMLCanvasElement,
@@ -21,7 +21,7 @@ export const drawHandLandmarks = (
 
 export const drawFaceMeshLandmarks = (
   canvas: HTMLCanvasElement,
-  faceDetections: any
+  faceDetections: FaceDetections
 ): void => {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");

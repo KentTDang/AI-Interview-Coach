@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export const useCamera = (videoRef: React.RefObject<HTMLVideoElement>) => {
+export const useCamera = (videoRef: React.RefObject<HTMLVideoElement | null>) => {
   useEffect(() => {
     const startCamera = async () => {
       try {

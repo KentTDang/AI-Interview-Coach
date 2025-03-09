@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import {
   FilesetResolver,
@@ -13,8 +14,8 @@ import { drawHandLandmarks, drawFaceMeshLandmarks, drawPoseLandmarkers } from ".
 import { useMetrics } from "@/context/MetricsContext";
 
 export const useMediapipe = (
-  videoRef: React.RefObject<HTMLVideoElement>,
-  canvasRef: React.RefObject<HTMLCanvasElement>,
+  videoRef: React.RefObject<HTMLVideoElement | null>,
+  canvasRef: React.RefObject<HTMLCanvasElement | null>,
   overlayEnabled: boolean
 ) => {
   // Detection states
@@ -39,9 +40,9 @@ export const useMediapipe = (
   const badPostureStartTimeRef = useRef(0);
 
   // Refs to store detector instances
-  const handDetectorRef = useRef<HandLandmarker>();
-  const faceDetectorRef = useRef<FaceLandmarker>();
-  const poseDetectorRef = useRef<PoseLandmarker>();
+  const handDetectorRef = useRef<HandLandmarker | null>(null);
+  const faceDetectorRef = useRef<FaceLandmarker | null>(null);
+  const poseDetectorRef = useRef<PoseLandmarker | null>(null);
 
   const { updateMetrics } = useMetrics();
 
