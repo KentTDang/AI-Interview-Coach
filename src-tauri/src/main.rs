@@ -1,3 +1,6 @@
+// Prevents additional console window on Windows in release, DO NOT REMOVE!!
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 use serde::{Serialize, Deserialize};
 use std::process::Command;
 
@@ -10,25 +13,40 @@ struct ScreenpipeAppSettings {
 
 #[tauri::command]
 fn get_screenpipe_app_settings() -> Result<String, String> {
-  // Set the working directory to your project root.
+  println!("Called get_screenpipe_app_settings");
   println!("Current directory: {:?}", std::env::current_dir());
 
-  let output = Command::new("node")
-      .current_dir("/Users/kentdang/Projects/AI-Interview-Coach") // adjust this path accordingly
-      .arg("/Users/kentdang/Projects/AI-Interview-Coach/screenpipe.js")
+  let node_result = Command::new("node")
+      .current_dir("/Users/kentdang/Projects/AI-Interview-Coach")
+      .arg("screenpipe.js")
       .arg("get")
-      .output()
-      .map_err(|e| e.to_string())?;
+      .output();
       
+  match node_result {
+    Ok(output) => {
+      println!("Command executed successfully");
       if output.status.success() {
-        let stdout = String::from_utf8(output.stdout).map_err(|e| e.to_string())?;
-        println!("Fetched settings: {}", stdout);
-        Ok(stdout)
-    } else {
+        match String::from_utf8(output.stdout) {
+          Ok(stdout) => {
+            println!("Fetched settings: {}", &stdout);
+            Ok(stdout)
+          },
+          Err(e) => {
+            println!("Error parsing stdout: {}", e);
+            Err(e.to_string())
+          }
+        }
+      } else {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        println!("Error output: {}", stderr);  // Log the error output
+        println!("Command failed: {}", stderr);
         Err(stderr.into_owned())
+      }
+    },
+    Err(e) => {
+      println!("Failed to execute command: {}", e);
+      Err(e.to_string())
     }
+  }
 }
 
 #[tauri::command]

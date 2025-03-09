@@ -7,7 +7,7 @@
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "next dev",
-    "beforeBuildCommand": "npm run build"
+    "beforeBuildCommand": "npm run build && npx serve@latest out"
   },
   "app": {
     "windows": [

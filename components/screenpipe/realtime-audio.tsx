@@ -229,7 +229,7 @@ export function RealtimeAudio({
       setSummary(response.choices[0].message.content);
     } catch (err) {
       console.error("Error generating summary:", err);
-      setSummary("An error occurred while generating the summary.");
+      setSummary("An error occurred while generating the summary. Please ensure you have an openai api key in your settings.");
     } finally {
       setLoading(false);
     }
