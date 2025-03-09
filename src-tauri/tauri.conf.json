@@ -2,12 +2,12 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "AI-Interview-Coach",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.ai-interview-coach.dev",
   "build": {
     "frontendDist": "../out",
     "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "bun dev",
-    "beforeBuildCommand": "bun build"
+    "beforeDevCommand": "next dev",
+    "beforeBuildCommand": "npm run build"
   },
   "app": {
     "windows": [
