@@ -4,7 +4,7 @@ Simulates a real interview environment by combining body language tracking (eye 
 
 ## Demo
 
-![AI Interview Coach Demo](assets/screenpipe_cringe_demo.gif)
+[🎥 Watch the demo video on Google Drive](https://drive.google.com/file/d/19UPQ1bLH2eUFtpm2DXqxeG2lLOfWLLL8/view?usp=sharing)
 
 ## Technologies Used
 
