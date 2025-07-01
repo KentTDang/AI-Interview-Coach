@@ -4,9 +4,7 @@ Simulates a real interview environment by combining body language tracking (eye 
 
 ## Demo
 
-<p align="center">
-  <video src="assets/screenpipe_cringe_demo.mp4" width="500" alt="TCG Scanner Demo" />
-</p>
+![AI Interview Coach Demo](assets/screenpipe_cringe_demo.gif)
 
 ## Technologies Used
 
