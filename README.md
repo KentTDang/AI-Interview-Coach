@@ -4,7 +4,7 @@ Simulates a real interview environment by combining body language tracking (eye 
 
 ## Demo
 
-[🎥 Watch the demo video on Google Drive](https://drive.google.com/file/d/19UPQ1bLH2eUFtpm2DXqxeG2lLOfWLLL8/view?usp=sharing)
+[🎥 Watch the demo video on youtube](https://youtube.com/shorts/ZfdGhHpvba8)
 
 ## Technologies Used
 
